@@ -58,6 +58,12 @@ public class Account {
         return new Account(name, username, password, email, phoneNumber, role);
     }
 
+    public static Account createAccountWithId(Long id, String name, String username, String password, String email, String phoneNumber, Role role) {
+        Account account = new Account(name, username, password, email, phoneNumber, role);
+        account.id = id;
+        return account;
+    }
+
     public void addAddress(Address address) {
         this.addressList.add(address);
         address.setAccount(this);

@@ -38,11 +38,11 @@ public class AccountService {
                 accountCreateRequest.getStreet(),
                 accountCreateRequest.getDetail()));
 
-        accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account);
 
         log.debug("계정 생성 성공: username={}", account.getUsername());
 
-        return account.getId();
+        return savedAccount.getId();
     }
 
     public Boolean isUsernameDuplicate(String username) {
