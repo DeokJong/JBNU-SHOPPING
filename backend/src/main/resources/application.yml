@@ -21,6 +21,9 @@ spring:
 
 logging:
   level:
+    com:
+      cottongallery:
+        backend: debug
     org:
       "[hibernate.SQL]": debug
 
