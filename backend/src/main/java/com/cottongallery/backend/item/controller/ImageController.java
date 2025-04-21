@@ -2,6 +2,7 @@ package com.cottongallery.backend.item.controller;
 
 import com.cottongallery.backend.item.constants.ImageType;
 import com.cottongallery.backend.item.service.ItemQueryService;
+import com.cottongallery.backend.item.service.impl.S3StorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,15 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.nio.file.Files;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 @Slf4j
 @RestController
@@ -27,6 +26,7 @@ import java.nio.file.Files;
 public class ImageController {
 
     private final ItemQueryService itemQueryService;
+    private final S3StorageService s3StorageService;
 
     @Operation(summary = "이미지 조회", description = "특정 이미지를 조회합니다.")
     @ApiResponses(value = {
@@ -43,30 +43,11 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // 파일 접근 권한 없음
         }
 
-        try {
-            // 파일 경로 설정
-            File file = new File(filename);
+        ResponseInputStream<GetObjectResponse> fileDownload = s3StorageService.downloadFile(filename);
 
-            if (!file.exists()) {
-                return ResponseEntity.notFound().build();
-            }
+        InputStreamResource resource = new InputStreamResource(fileDownload);
 
-            // 파일을 Resource로 변환
-            Resource resource = new UrlResource(file.toURI());
-
-            // Content-Type 설정
-            String contentType = Files.probeContentType(file.toPath());
-            if (contentType == null || !contentType.startsWith("image/")) {
-                log.warn("이미지 파일이 아님: {}", filename);
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(resource);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok()
+                .body(resource);
     }
 }

@@ -43,3 +43,6 @@ allowed:
 
 file:
   path: /app/resources/
+
+aws:
+  bucket-name:

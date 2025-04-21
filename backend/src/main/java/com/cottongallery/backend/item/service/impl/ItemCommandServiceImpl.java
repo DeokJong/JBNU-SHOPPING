@@ -27,8 +27,8 @@ import java.util.Optional;
 public class ItemCommandServiceImpl implements ItemCommandService {
 
     private final ItemQueryService itemQueryService;
-    private final ImageService imageService;
 
+    private final S3StorageService s3StorageService;
     private final DiscountRepository discountRepository;
     private final ItemRepository itemRepository;
 
@@ -38,7 +38,7 @@ public class ItemCommandServiceImpl implements ItemCommandService {
                 .flatMap(discountRepository::findById)
                 .orElse(null);
 
-        String itemImageFullPath = imageService.saveFile(itemImage), itemInfoImageFullPath = imageService.saveFile(itemInfoImage);
+        String itemImageFullPath = s3StorageService.fileUpload(itemImage), itemInfoImageFullPath = s3StorageService.fileUpload(itemInfoImage);
 
         Item item = Item.createItem(itemCreateRequest.getName(),
                 itemCreateRequest.getPrice(),
@@ -74,13 +74,13 @@ public class ItemCommandServiceImpl implements ItemCommandService {
         Item item = itemQueryService.getItemEntityById(itemId);
 
         if (imageType == ImageType.ITEM_IMAGE) {
-            imageService.deleteImage(item.getItemImagePath());
-            String fullPath = imageService.saveFile(itemImage);
+            s3StorageService.deleteFile(item.getItemImagePath());
+            String fullPath = s3StorageService.fileUpload(itemImage);
             item.changeItemImagePath(fullPath);
         }
         else {
-            imageService.deleteImage(item.getItemInfoImagePath());
-            String fullPath = imageService.saveFile(itemImage);
+            s3StorageService.deleteFile(item.getItemInfoImagePath());
+            String fullPath = s3StorageService.fileUpload(itemImage);
             item.changeItemInfoImagePath(fullPath);
         }
     }
@@ -91,7 +91,7 @@ public class ItemCommandServiceImpl implements ItemCommandService {
 
         item.changeItemStatus(ItemStatus.DELETED);
 
-        imageService.deleteImage(item.getItemImagePath());
-        imageService.deleteImage(item.getItemInfoImagePath());
+        s3StorageService.deleteFile(item.getItemImagePath());
+        s3StorageService.deleteFile(item.getItemInfoImagePath());
     }
 }
