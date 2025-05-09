@@ -1,0 +1,9 @@
+.git
+.gitignore
+.vscode
+.gradle
+build/
+bin
+Dockerfile
+node_modules
+.next

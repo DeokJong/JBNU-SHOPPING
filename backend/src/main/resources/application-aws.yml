@@ -1,0 +1,12 @@
+# AWS 환경에서 실행할 때 사용할 설정 파일
+spring:
+  datasource:
+    url: "jdbc:postgresql://${RDS_ENDPOINT:}/"
+    username: ${username:}
+    password: ${password:}
+    driver-class-name: org.postgresql.Driver
+
+  data:
+    redis:
+      host: ${ELASTICACHE_HOST:}
+      port: ${ELASTICACHE_PORT:}

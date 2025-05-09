@@ -3,10 +3,10 @@
 #=================================================================
 FROM amazoncorretto:17-alpine3.18 AS builder-jre
 
-# Step 2: Install binutils
+# Step 2: binutills 설치
 RUN apk add --no-cache binutils
 
-# Step 3: Use jlink to create a minimized JRE
+# Step 3: jlink 사용하여 최소화된 JRE 생성
 RUN $JAVA_HOME/bin/jlink \
          --module-path "$JAVA_HOME/jmods" \
          --verbose \
@@ -18,15 +18,15 @@ RUN $JAVA_HOME/bin/jlink \
          --output /jre
 
 #=================================================================
-# BUILD STAGE 2 - Build the application using Gradle
+# BUILD STAGE 2 - Gradle을 사용하여 애플리케이션 빌드
 #=================================================================
 FROM gradle:7.6-jdk17-alpine AS builder-app
 
-# Copy application files and Gradle wrapper
+# 애플리케이션 파일 및 Gradle 래퍼 복사
 WORKDIR /workspace
 COPY . .
 
-# Build the application
+# 애플리케이션 빌드
 RUN gradle build -x test
 
 #=================================================================
@@ -34,23 +34,26 @@ RUN gradle build -x test
 #=================================================================
 FROM alpine:3.18.4
 
-# Environment settings
+# 환경 설정
 ENV JAVA_HOME=/jre
 ENV PATH="$JAVA_HOME/bin:$PATH"
 
-# Copy the minimal JRE from the previous build stage
+# 이전 빌드 단계에서 최소화된 JRE 복사
 COPY --from=builder-jre /jre $JAVA_HOME
 
-# Set working directory
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# Copy the built JAR from the Gradle build stage
+# Gradle 빌드 단계에서 빌드된 JAR 복사
 COPY --from=builder-app /workspace/build/libs/*.jar app.jar
 
 RUN mkdir -p /app/resources && chmod -R 755 /app/resources
 
-# Expose the application port
+# 애플리케이션 포트 노출
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
+# 애플리케이션 실행
+CMD ["java", "-jar", "app.jar"]

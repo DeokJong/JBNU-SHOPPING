@@ -2,6 +2,7 @@
 
 import { baseUrl } from "@/app/(auth)/_components/SignUp";
 import Logo from "@/components/Logo";
+import { API_URL } from "@/constants";
 import { useAuthStore } from "@/store/authStore";
 import useCategoryStore from "@/store/categoryStore";
 import Link from "next/link";

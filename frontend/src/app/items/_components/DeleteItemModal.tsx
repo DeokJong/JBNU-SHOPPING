@@ -1,5 +1,6 @@
 import { baseUrl } from "@/app/(auth)/_components/SignUp";
 import CommonModal from "@/components/CommonModal";
+import { API_URL } from "@/constants";
 import { useRouter } from "next/navigation";
 import React, { SetStateAction } from "react";
 

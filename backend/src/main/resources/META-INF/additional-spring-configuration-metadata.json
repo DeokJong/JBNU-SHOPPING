@@ -2,36 +2,41 @@
   {
     "name": "jwt.access-token-validity-in-seconds",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.token-validity-in-seconds'"
+    "description": "AccessToken 만료 시간"
   },
   {
     "name": "jwt.secret",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.secret'"
+    "description": "JWT 시크릿 키"
   },
   {
     "name": "allowed.origins",
     "type": "java.lang.String",
-    "description": "A description for 'allowed.origins'"
+    "description": "허용된 원본"
   },
   {
     "name": "allowed.methods",
     "type": "java.lang.String",
-    "description": "A description for 'allowed.methods'"
+    "description": "허용된 메서드"
   },
   {
     "name": "jwt.refresh-token-validity-in-seconds",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.refresh-token-validity-in-seconds'"
+    "description": "RefreshToken 만료 시간"
   },
   {
     "name": "jwt.authorization-header-refresh",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.authorization-header-refresh'"
+    "description": "RefreshToken 인증 헤더 이름"
   },
   {
     "name": "jwt.authorization-header-access",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.authorization-header-access'"
+    "description": "AccessToken 인증 헤더 이름"
+  },
+  {
+    "name": "file.path",
+    "type": "java.lang.String",
+    "description": "S3 파일 경로"
   }
 ]}

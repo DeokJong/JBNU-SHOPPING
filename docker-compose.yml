@@ -20,6 +20,15 @@ services:
     volumes:
       - redis_data:/data
 
+
+  frontend-container:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+
   springboot-container:
     build:
       context: ./backend
